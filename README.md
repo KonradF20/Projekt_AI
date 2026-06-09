@@ -121,22 +121,20 @@ System automatycznie rozpoznaje stan sesji oraz poziom uprawnień użytkownika n
 * **Wariant A: Widok Gościa (Niezalogowany)**
   Gdy użytkownik wchodzi na stronę po raz pierwszy, system inicjuje domyślny stan autoryzacji (`@guest`). Górny pasek nawigacyjny oferuje przyciski "Zaloguj się" oraz "Załóż konto". Na środku ekranu pojawia się czysty formularz wyszukiwania oraz sekcja *Empty State* zachęcająca do podania kryteriów podróży.
   
-  ![Strona główna - Gość](docs/Strona_główna.jpg)
+  ![Strona główna - Gość](docs/Strona_główna.png)
   > *Opis: Stan początkowy aplikacji dla użytkownika bez aktywnej sesji.*
 
 * **Wariant B: Widok Zalogowanego Użytkownika**
   Po pomyślnym zalogowaniu, system niszczy widok gościa i przebudowuje nagłówek strony (`@auth`). W prawym górnym rogu dynamicznie wstrzykiwane jest imię zalogowanego użytkownika pobrane bezpośrednio z bazy danych, ikona przejścia do edycji profilu oraz przycisk wylogowania. Wyszukiwarka pozostaje w pełni aktywna i gotowa do przyjmowania zapytań.
   
-  ![Strona główna - Zalogowany](docs/Strona_główna_zalogowany.jpg)
+  ![Strona główna - Zalogowany](docs/Strona_główna_zalogowany.png)
   > *Opis: Strona główna z aktywnym kontekstem zalogowanego użytkownika.*
 
 * **Wariant C: Widok Administratora**
   Gdy do systemu loguje się użytkownik z adresem `admin@test.pl`, funkcja `isAdmin()` w modelu `User` zwraca wartość `true`. Na tej podstawie system całkowicie ukrywa formularz wyszukiwania podróży, aby administrator nie zużywał limitów API. W zamian generowany jest dedykowany panel informacyjny informujący o trybie zarządzania z przyciskiem bezpośredniego przekierowania do panelu administracyjnego.
   
-  ![Strona główna - Administrator](docs/Strona_główna_admin.jpg)
+  ![Strona główna - Administrator](docs/Strona_główna_admin.png)
   > *Opis: Bezpieczny widok powitalny przeznaczony wyłącznie dla konta zarządzającego.*
-
----
 
 **2. Proces Uwierzytelniania i Rejestracji**
 
@@ -144,17 +142,15 @@ Autoryzacja w aplikacji została zaprojektowana w technologii asynchronicznej (A
 
 * **Tworzenie konta (Rejestracja):** Użytkownik wypełnia formularz. Po kliknięciu "Utwórz konto", skrypt JavaScript przechwytuje dane i wysyła je do trasy `/register`. Klasa `RegisterRequest` sprawdza unikalność adresu e-mail oraz minimalną długość hasła (8 znaków). W przypadku sukcesu użytkownik jest automatycznie logowany, a strona odświeża się, przechodząc w stan zalogowany.
   
-  ![Okno Rejestracji](docs/rejestracja.jpg)
+  ![Okno Rejestracji](docs/rejestracja.png)
   > *Opis: Interfejs rejestracji z dedykowaną grafiką i walidacją pól w czasie rzeczywistym.*
 
 * **Logowanie do systemu:** Jeśli użytkownik posiada już konto, klika przycisk "Zaloguj się", co powoduje dynamiczne przełączenie widoku modala (ukrywane jest pole tekstowe z imieniem). Dane trafiają do klasy `LoginRequest`, która za pomocą metody `Auth::attempt()` weryfikuje dane z bazą SQLite.
   
-  ![Okno Logowania](docs/logowanie.jpg)
+  ![Okno Logowania](docs/logowanie.png)
   > *Opis: Modal logowania obsługujący asynchroniczne sprawdzanie poprawności haseł.*
 
 * **Wymuszenie logowania (Zabezpieczenie):** Jeśli nieautoryzowany gość spróbuje wpisać dane w wyszukiwarkę i kliknie "Szukaj", system zablokuje wykonanie kodu, automatycznie wysunie modal logowania i wyświetli czerwony komunikat informujący o konieczności posiadania konta, dbając o bezpieczeństwo budżetu API.
-
----
 
 **3. Proces Planowania i Pracy z Sztuczną Inteligencją**
 
@@ -162,15 +158,13 @@ To serce aplikacji, łączące zaawansowane skrypty frontendowe z zewnętrznymi 
 
 * **Krok 1: Wyszukiwanie i kodowanie IATA** Podczas wpisywania celu podróży, system uruchamia bibliotekę *Tom Select* połączoną z publiczną bazą danych lotnisk. Użytkownik nie musi znać skomplikowanych oznaczeń lotniczych – wpisując np. "Lizbona", system automatycznie podpowiada i podstawia międzynarodowy kod IATA (LIS). Chroni to aplikację przed błędami użytkownika (literówkami).
   
-  ![Wyszukiwarka lotnisk](docs/Wpisywanie_w_pole.jpg)
+  ![Wyszukiwarka lotnisk](docs/Wpisywanie_w_pole.png)
   > *Opis: Mechanizm inteligentnego podpowiadania i standaryzacji nazw lotnisk.*
 
 * **Krok 2: Asynchroniczny proces generowania (Loading State)** Po kliknięciu przycisku "Szukaj", formularz główny zostaje natychmiast ukryty w strukturze DOM. System uruchamia animowany cykl ładowania (*loading spinner*). W tym czasie backend wykonuje trzy zadania: wysyła zapytanie strukturalne do modelu LLaMA na platformie Groq, parsuje daty i wysyła zapytania do SerpApi po aktualne loty i hotele.
   
-  ![Ekran ładowania AI](docs/Ładowanie.jpg)
+  ![Ekran ładowania AI](docs/Ładowanie.png)
   > *Opis: Ekran blokujący interfejs na czas wykonywania zapytań sieciowych (do 30 sekund).*
-
----
 
 **4. Prezentacja i Interakcja z Wynikami Podróży**
 
@@ -178,15 +172,13 @@ Po odebraniu kompletnych odpowiedzi z zewnętrznych serwerów, ekran ładowania 
 
 * **Agregacja ofert rynkowych (API):** Aplikacja prezentuje kafelki zawierające logotyp linii lotniczej, dokładne godziny wylotu i lądowania, czas trwania lotu, liczbę przesiadek oraz aktualną najniższą cenę w PLN pobraną z Google Flights. Obok wyświetlana jest propozycja najlepiej ocenianego hotelu w tym samym terminie wraz z jego miniaturą i ceną za cały pobyt. Oba kafelki są klikalnymi linkami, które przenoszą użytkownika bezpośrednio do rezerwacji.
   
-  ![Wygenerowany lot i hotel](docs/Widok_lotu_i_hotelu.jpg)
+  ![Wygenerowany lot i hotel](docs/Widok_lotu_i_hotelu.png)
   > *Opis: Wizualna prezentacja rzeczywistych danych logistycznych pobranych przez SerpApi.*
 
 * **Interaktywna Oś Czasu (AI):** Poniżej wyświetlany jest szczegółowy plan wycieczki przygotowany przez sztuczną inteligencję. System oblicza liczbę dni i generuje poziomą listę zakładek. Kliknięcie na dany dzień (np. Dzień 2) uruchamia prostą, ultrawydajną funkcję JavaScript `switchDay()`, która ukrywa poprzednie atrakcje i pokazuje nowe bez ponownego przeładowywania strony i obciążania serwera. Na każdy dzień zaplanowane jest dokładnie 6 szczegółowych aktywności.
   
-  ![Interaktywna oś czasu](docs/Widok_planu.jpg)
+  ![Interaktywna oś czasu](docs/Widok_planu.png)
   > *Opis: Widok harmonogramu dnia zarządzany po stronie klienta (Client-Side Rendering).*
-
----
 
 **5. Panel Użytkownika (Zapis i Zarządzanie)**
 
@@ -194,12 +186,12 @@ Każdy wygenerowany plan jest tymczasowy. Aby zachować go na stałe, użytkowni
 
 * **Zapisywanie planu (Create):** Kliknięcie przycisku "Zapisz plan do profilu" uruchamia trasę `/save-plan`. System serializuje tablice PHP z planem dnia, lotami oraz hotelem do formatu tekstowego JSON i zapisuje je w tabeli `travel_plans` pod unikalnym ID użytkownika. Następuje przekierowanie z zielonym komunikatem sukcesu.
   
-  ![Lista moich planów](docs/Moje_plany.jpg)
+  ![Lista moich planów](docs/Moje_plany.png)
   > *Opis: Pulpit użytkownika prezentujący archiwalne podróże z podsumowaniem kosztów wyciągniętych z JSON.*
 
 * **Odczyt archiwalnych danych (Read):** Kliknięcie przycisku "Zobacz pełny plan" na dowolnym kafelku wywołuje trasę `/moje-plany/{id}`. Kontroler pobiera dane, dokonuje automatycznego rzutowania typu (*Json Casts*) z powrotem na tablice PHP i renderuje dokładnie ten sam widok, który użytkownik widział po wygenerowaniu, zachowując pełną interaktywność osi czasu.
   
-  ![Zobacz zapisany plan](docs/Zobacz_zapisany_plan.jpg)
+  ![Zobacz zapisany plan](docs/Zobacz_zapisany_plan.png)
   > *Opis: Widok podglądu zapisanego planu wywołany z bazy SQLite.*
 
 * **Bezpieczne usuwanie planu (Delete):** Aby zapobiec utracie danych przez przypadkowe kliknięcie, naciśnięcie ikony kosza na kafelku nie usuwa go od razu. System wywołuje okno modalne z ostrzeżeniem. Dopiero po kliknięciu "Tak, usuń", aplikacja wysyła asynchroniczne żądanie metodą `DELETE` za pomocą JavaScript `fetch()`. Po pomyślnej odpowiedzi z serwera, kafelek planu płynnie znika z ekranu za pomocą animacji zmniejszania skali (`scale-90`) i przezroczystości, po czym jest usuwany ze struktury HTML.
@@ -209,10 +201,8 @@ Każdy wygenerowany plan jest tymczasowy. Aby zachować go na stałe, użytkowni
 
 * **Ustawienia zabezpieczeń konta:** W zakładce profilu użytkownik ma możliwość zmiany hasła. Klasa `UpdatePasswordRequest` dba o to, aby system sprawdził za pomocą wbudowanej reguły Laravel (`current_password`), czy użytkownik podał poprawne stare hasło, zanim pozwoli na zapisanie nowego, zaszyfrowanego algorytmem bcrypt hasła w bazie danych.
   
-  ![Edycja profilu](docs/Profil.jpg)
+  ![Edycja profilu](docs/Profil.png)
   > *Opis: Formularz zmiany hasła z rygorystyczną walidacją wsteczną.*
-
----
 
 **6. Pełny Panel Administratora (FilamentPHP CRUD)**
 
@@ -233,15 +223,13 @@ Dla celów nadzorczych, administrator systemu ma dostęp do odizolowanego, zabez
   ![Panel administratora - Edycja](docs/Panel_admina_edycja.png)
   > *Opis: Widok modyfikacji i usuwania danych użytkownika.*
 
----
-
 **7. Responsywność Systemu (RWD)**
 
 Aplikacja została zaprojektowana zgodnie z filozofią *Mobile-First* przy użyciu klas responsywnych frameworka Tailwind CSS (modyfikatory `sm:`, `md:`, `lg:`). 
 
 Gdy system wykryje mniejszą rozdzielczość ekranu (np. smartfon), górne menu nawigacyjne oraz formularze wyszukiwania płynnie adaptują się do formatu pionowego. Elementy interfejsu układają się w strukturę jednokolumnową, dotykowe przyciski ulegają powiększeniu dla wygody obsługi kciukiem, a marginesy boczne zostają automatycznie zwężone, zapewniając pełną czytelność wygenerowanych planów podróży na dowolnym urządzeniu mobilnym.
 
-![Widok mobilny](docs/Responsywne.jpg)
+![Widok mobilny](docs/Responsywne.png)
 > *Opis: Wygląd strony głównej oraz formularza wyszukiwania na ekranie smartfona.*
 
 ### Role w systemie
