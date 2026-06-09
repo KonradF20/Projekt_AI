@@ -36,7 +36,7 @@ Otwórz terminal (konsolę) i wykonaj poniższe kroki:
 
 1. Pobierz projekt na swój komputer:
 ```bash
-git clone [https://github.com/KonradF20/Projekt_AI.git](https://github.com/KonradF20/Projekt_AI.git)
+git clone https://github.com/KonradF20/Projekt_AI.git
 cd Projekt_AI
 ```
 
